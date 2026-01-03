@@ -24,9 +24,9 @@ import { CollapsibleContent } from 'reka-ui';
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton as-child>
-              <a href="#">
+               <NuxtLink to="/weeks">
                 <span>Lista de Semanas</span>
-              </a>
+             </NuxtLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -46,25 +46,25 @@ import { CollapsibleContent } from 'reka-ui';
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton as-child>
-                      <a href="#">
+                      <NuxtLink to="/manage/bills">
                         <span>Administrar Facturas</span>
-                      </a>
+                      </NuxtLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
                     <SidebarMenuButton as-child>
-                      <a href="#">
+                      <NuxtLink to="/manage/members">
                         <span>Administrar Participantes</span>
-                      </a>
+                      </NuxtLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
                     <SidebarMenuButton as-child>
-                      <a href="#">
+                     <NuxtLink to="/manage/places">
                         <span>Administrar Comercios</span>
-                      </a>
+                      </NuxtLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>

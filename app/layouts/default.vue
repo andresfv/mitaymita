@@ -1,4 +1,3 @@
-import { CollapsibleContent } from 'reka-ui';
 <!--
   Layout por defecto de la aplicación.
 -->
@@ -24,9 +23,9 @@ import { CollapsibleContent } from 'reka-ui';
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton as-child>
-               <NuxtLink to="/weeks">
+              <NuxtLink to="/weeks">
                 <span>Lista de Semanas</span>
-             </NuxtLink>
+              </NuxtLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -62,7 +61,7 @@ import { CollapsibleContent } from 'reka-ui';
 
                   <SidebarMenuItem>
                     <SidebarMenuButton as-child>
-                     <NuxtLink to="/manage/places">
+                      <NuxtLink to="/manage/places">
                         <span>Administrar Comercios</span>
                       </NuxtLink>
                     </SidebarMenuButton>
@@ -81,10 +80,11 @@ import { CollapsibleContent } from 'reka-ui';
       </div>
     </SidebarInset>
   </SidebarProvider>
-
+  <Toaster position="bottom-center" :expand="true" :close-button="true" close-button-position="top-right" rich-colors />
 </template>
 
 <script setup lang="ts">
-
+import { CollapsibleContent } from 'reka-ui';
+import { Toaster } from 'vue-sonner';
 
 </script>

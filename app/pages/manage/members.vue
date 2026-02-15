@@ -1,4 +1,3 @@
-import { MyFabButton } from '../../../.nuxt/components';
 <template>
     <MembersDialog v-model:open="modalOpen" />
 

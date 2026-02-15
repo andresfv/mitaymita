@@ -1,56 +1,54 @@
-import { Button } from '../../../../.nuxt/components';
 <template>
-<div>
-    
+    <div>
 
-    <Card class="m-1" >
-        <CardContent class="group/card">
-            <div>
-                <div v-if="editMode">
-                    <input ref="inputRef" v-model="member.name" 
-                    @keydown.enter="handleMemberUpdate(member);"
-                    @blur="editCancel()"
-                    @keydown.escape="editCancel()"
-                    class="border px-2 py-1 rounded" />
-                </div>
-                
-                <div v-else>
-                       <CardDescription>
-                        <div class="relative">
 
-                              <ConfirmDialog title="Eliminar participante"
+        <Card class="m-1">
+            <CardContent class="group/card">
+                <div>
+                    <div v-if="editMode">
+                        <input ref="inputRef" v-model="localMember.name"
+                            @keydown.enter="handleMemberUpdate(localMember);" @blur="editCancel()"
+                            @keydown.escape="editCancel()" class="border px-2 py-1 rounded" />
+                    </div>
+
+                    <div v-else>
+                        <CardDescription>
+                            <div class="relative">
+
+                                <ConfirmDialog title="Eliminar participante"
                                     description="El participante será eliminado definitivamente"
-                                    @confirm="handleMemberDelete(member)">
+                                    @confirm="handleMemberDelete(localMember)">
                                     <Button variant="ghost" size="icon-sm"
                                         class="absolute -top-4 -right-4 rounded-full cursor-pointer opacity-0 group-hover/card:opacity-100 transition">
                                         <TrashIcon />
                                     </Button>
                                 </ConfirmDialog>
 
-                         </div>
+                            </div>
                             <div class="flex">
                                 <span> Nombre </span>
                             </div>
 
                         </CardDescription>
-  
-                    <div class="flex items-center gap-2 group/name">
-                        <CardTitle class="mt-2">{{ member.name }}</CardTitle>
-                        <Button variant="ghost" size="icon-sm" @click="startEdit()"
-                        class="rounded-full cursor-pointer opacity-0 group-hover/name:opacity-100 transition">
-                            <EditIcon />
-                        </Button>
+
+                        <div class="flex items-center gap-2 group/name">
+                            <CardTitle class="mt-2">{{ localMember.name }}</CardTitle>
+                            <Button variant="ghost" size="icon-sm" @click="startEdit()"
+                                class="rounded-full cursor-pointer opacity-0 group-hover/name:opacity-100 transition">
+                                <EditIcon />
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 mt-4">
+                        <input :id="`active-${localMember.id}`" type="checkbox" v-model="localMember.active"
+                            @change="handleMemberUpdate(localMember)" />
+                        <Label :for="`active-${localMember.id}`">Activo</Label>
                     </div>
                 </div>
-
-                <div class="flex items-center space-x-2 mt-4">
-                    <input :id="`active-${member.id}`" type="checkbox" v-model="member.active" @change="handleMemberUpdate(member)"/>
-                    <Label :for="`active-${member.id}`">Activo</Label>
-                </div>
-            </div>
-        </CardContent>
-    </Card>
-</div>
+            </CardContent>
+        </Card>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -70,36 +68,36 @@ interface Props {
     member: Member;
 }
 
+const localMember = ref({ ...props.member });
+
 const startEdit = () => {
     editMode.value = true;
-    
+
     nextTick(() => {
         inputRef.value?.focus()
     })
 };
 
-const handleMemberUpdate = (member : Member) => {
-    try {
-        splitUpStore.updateMember(member);
-    } catch (error) {
-        console.error('Error actualizando participante:', error);
-    }finally {
-        editMode.value = false;
-    }
+const handleMemberUpdate = async () => {
+    await splitUpStore.updateMember(localMember.value);
+    editMode.value = false
 };
 
-const handleMemberDelete = (member: Member) => {
-    try {
-        splitUpStore.deleteMember(member);
-    } catch (error) {
-        console.error('Error eliminando participante:', error);
-    }
+const handleMemberDelete = async (member: Member) => {
+    await splitUpStore.deleteMember(member);
 }
 
-const editCancel = () =>{
+const editCancel = () => {
     editMode.value = false;
-    splitUpStore.getMembers();
 }
+
+watch(
+    () => props.member,
+    (newValue) => {
+        localMember.value = { ...newValue }
+    },
+    { immediate: true }
+);
 
 </script>
 

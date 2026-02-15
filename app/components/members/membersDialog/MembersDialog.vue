@@ -35,7 +35,6 @@
 </template>
 
 <script setup lang="ts">
-import { toast } from 'vue-sonner';
 
 interface Props {
     open: boolean;

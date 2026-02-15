@@ -1,9 +1,9 @@
+import type { NuxtError } from '#app';
 import { toast } from 'vue-sonner';
 
 export const useSplitUpStore = defineStore('split-up', () => {
-
+    // ***MEMBERS***
     const members = ref<Member[]>([]);
-    const selectedMember = ref<Member | null>(null);
 
     const getMembers = async () => {
         members.value = await $fetch<Member[]>('/api/members');
@@ -24,7 +24,7 @@ export const useSplitUpStore = defineStore('split-up', () => {
 
             // Validar nombres duplicados
             const existingMember = members.value.find(m =>
-                m.name.toLowerCase() === memberName.toLowerCase()
+                m?.name?.toLowerCase() === memberName.toLowerCase()
             );
 
             if (existingMember) {
@@ -37,18 +37,12 @@ export const useSplitUpStore = defineStore('split-up', () => {
                 body: { name: memberName.trim(), active: member?.active ?? false }
             })
 
-            if (!newMember) {
-                toast.error('Error al crear el miembro');
-                return;
-            }
             members.value.push(newMember);
             toast.success('Miembro agregado correctamente');
 
-        } catch {
-            showError({
-                statusCode: 500,
-                statusMessage: 'Error del servidor al agregar miembro'
-            });
+        } catch (e){
+            console.error("Error al guardar miembro", e);
+            toast.error('Error al agregar miembro');
         };
     };
 
@@ -86,28 +80,27 @@ export const useSplitUpStore = defineStore('split-up', () => {
                 }
             });
 
+            const index = members.value.findIndex(m => m.id === member.id);
+
+            if (index !== -1) {
+                members.value[index] = member;
+            }
+
             toast.success('Miembro actualizado correctamente');
 
-        } catch {
-            showError({
-                statusCode: 500,
-                statusMessage: 'Error del servidor al actualizar miembro'
-            });
+        } catch(e) {
+            console.error("Error al actualizar miembro", e);
+            toast.error('Error al actualizar miembro');
         }
     };
 
     const deleteMember = async (member: Member) => {
         try {
 
-            // Validar que no sea el último miembro activo
-            const activeMembers = members.value.filter(m => m.active && m.id !== member.id);
-            if (activeMembers.length === 0) {
-                throw new Error('No puedes eliminar el último miembro activo');
-            }
-
             // Validar que el miembro existe
             if (!members.value.find(m => m.id === member.id)) {
-                throw new Error('El miembro no existe');
+                toast.error('El miembro no existe');
+                return;
             }
 
             await $fetch<string>(`/api/members/${member.id}`, {
@@ -117,23 +110,138 @@ export const useSplitUpStore = defineStore('split-up', () => {
             members.value = members.value.filter(m => m.id !== member.id);
 
             toast.success('Miembro eliminado correctamente');
-        } catch {
-            showError({
-                statusCode: 500,
-                statusMessage: 'Error del servidor al eliminar miembro'
+        } catch(e) {
+            showError(e as NuxtError);
+        };
+    };
+
+
+    // ***PLACES***
+     const places = ref<Place[]>([]);
+
+    const getPlaces = async () => {
+        places.value = await $fetch<Place[]>('/api/places');
+    };
+
+    const addPlace = async (place?: Place) => {
+        try {
+           
+            // Validar nombre
+            const placeName = place?.name?.trim() || 'Nuevo comercio';
+            if (placeName.length < 1) {
+                toast.error('El nombre del comercio es requerido');
+                return;
+            }
+            if (placeName.length > 50) {
+                toast.error('El nombre no puede exceder 50 caracteres');
+                return;
+            }
+
+            // Validar nombres duplicados
+            const existingPlace = places.value.find(p =>
+                p?.name?.toLowerCase() === placeName?.toLowerCase()
+            );
+
+            if (existingPlace) {
+                toast.error('Ya existe un comercio con ese nombre');
+                return;
+            }
+
+            const newPlace: Place = await $fetch<Place>('/api/places', {
+                method: 'POST',
+                body: { name: placeName.trim() }
+            })
+
+            places.value.push(newPlace);
+            toast.success('Comercio agregado correctamente');
+
+        } catch(e) {
+            console.error("Error al guardar comercio", e);
+            showError(e as NuxtError);
+        };
+    };
+
+    const updatePlace = async (place: Place) => {
+        try {
+            // Validar que el comercio existe
+            if (!place.id) {
+                toast.error('ID del comercio es requerido');
+                return;
+            }
+
+            // Validar nombre
+            if (!place.name?.trim()) {
+                toast.error('El nombre del comercio es requerido');
+                return;
+            }
+
+            if (place.name.length > 50) {
+                toast.error('El nombre no puede exceder 50 caracteres');
+                return;
+            }
+
+            // Validar que el comercio existe en la lista local
+            const existingPlace = places.value.find(p => p.id === place.id);
+            if (!existingPlace) {
+                toast.error('El comercio no existe');
+                return;
+            }
+
+            const updatedPlace = await $fetch<Place>(`/api/places/${place.id}`, {
+                method: 'PUT',
+                body: {
+                    name: place.name.trim(),
+                }
             });
+
+            const index = places.value.findIndex(p => p.id === place.id)
+
+            if (index !== -1) {
+                places.value[index] = updatedPlace;
+            }
+
+            toast.success('Comercio actualizado correctamente');
+        } catch(e) {
+            showError(e as NuxtError);
+        }
+    };
+
+    const deletePlace = async (place: Place) => {
+        try {
+
+            // Validar que el comercio existe
+            if (!places.value.find(p => p.id === place.id)) {
+                toast.error('El comercio no existe');
+                return;
+            }
+
+            await $fetch<string>(`/api/places/${place.id}`, {
+                method: 'DELETE',
+            });
+
+            places.value = places.value.filter(p => p.id !== place.id);
+            toast.success('Comercio eliminado correctamente');
+        } catch(e) {
+            showError(e as NuxtError);
         };
     };
 
     return {
-        //properties
+        //---properties---
         members,
-        selectedMember,
+        places,
 
-        //actions
+        //---actions---
+        //members
         getMembers,
         addMember,
         updateMember,
         deleteMember,
+
+        //places
+        getPlaces,
+        addPlace,
+        updatePlace,
+        deletePlace,
     };
 },);

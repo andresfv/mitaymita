@@ -34,9 +34,6 @@ export default defineEventHandler(async (event) => {
 
   } catch (error) {
     console.error('Error al actualizar el miembro:', error);
-    throw createError({
-      statusCode: 409,
-      statusMessage: 'El nombre ya existe'
-    });
+    throw createError('Error al actualizar el miembro');
   }
 });

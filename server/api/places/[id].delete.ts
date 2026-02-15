@@ -1,7 +1,7 @@
 import { getDb } from '../../utils/db';
 
 /**
- * Elimina un miembro de la base de datos.
+ * Elimina un place de la base de datos.
  */
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
@@ -16,12 +16,12 @@ export default defineEventHandler(async (event) => {
   try {
     const db = await getDb();
 
-    await db.run('DELETE FROM members WHERE id = ?', [id])
+    await db.run('DELETE FROM places WHERE id = ?', [id]);
 
     return { success: true };
     
   } catch (error) {
-    console.error('Error al eliminar el miembro:', error);
-    throw createError('Error al eliminar el miembro');
+    console.error('Error al eliminar place:', error);
+    throw createError('Error al eliminar el comercio');
   }
-})
+});

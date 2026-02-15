@@ -24,9 +24,6 @@ export default defineEventHandler(async (event) => {
     return { id: result.lastID }
   } catch (error) {
     console.error('Error al crear el miembro:', error);
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Error al crear el miembro'
-    });
+    throw createError('Error al crear el miembro');
   }
 });

@@ -11,6 +11,7 @@
     "reset": "rimraf node_modules .nuxt .output .nitro && pnpm install"
   },
   "dependencies": {
+    "@nuxtjs/color-mode": "4.0.0",
     "@pinia/nuxt": "0.11.3",
     "@radix-ui/react-navigation-menu": "^1.2.14",
     "@tailwindcss/vite": "^4.1.18",

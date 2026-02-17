@@ -8,12 +8,11 @@
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg">
-              <div
-                class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-
+              <div>
+                <AppLogo class="h-6 w-6" />
               </div>
-              <div class="grid flex-1 text-left text-sm leading-tight">
-                <span class="truncate font-semibold">SplitUp</span>
+              <div class="grid flex-1 text-sm leading-tight -ml-2.5">
+                <span class="truncate font-semibold">plitUp</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -75,7 +74,12 @@
       <SidebarRail />
     </Sidebar>
     <SidebarInset>
-      <div class="p-6">
+     <div class="bg-white dark:bg-black min-h-screen p-6 transition-colors duration-300">
+        
+      <header class="flex justify-end p-4">
+          <ThemeToggle />
+        </header>
+
         <NuxtPage />
       </div>
     </SidebarInset>
@@ -86,5 +90,8 @@
 <script setup lang="ts">
 import { CollapsibleContent } from 'reka-ui';
 import { Toaster } from 'vue-sonner';
+import ThemeToggle from '~/components/common/themeToggle/ThemeToggle.vue';
+import AppLogo from '~/components/icons/AppLogo.vue';
+
 
 </script>
